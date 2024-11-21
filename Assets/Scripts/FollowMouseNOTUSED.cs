@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FollowMouse : MonoBehaviour
+public class FollowMouseNOTUSED : MonoBehaviour
 {
     
     public float maxSpeed = 2f;
