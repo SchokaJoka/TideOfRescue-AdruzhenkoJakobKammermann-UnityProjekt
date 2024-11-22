@@ -1,19 +1,31 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BoatController : MonoBehaviour
 {
+    // Movement
     public float moveSpeed = 2f;            // Maximum forward speed
     public float rotationSpeed = 20f;       // Maximum rotation speed (degrees per second)
     public float smoothTime = 0.8f;         // Time it takes to ease movement
-
-    private Camera _mainCamera;              // Cache the Camera reference
+    private float _currentAngularVelocity;   // For smoothing rotation
     private Vector3 _targetPosition;
     private Vector3 _currentVelocity;        // For smoothing position
-    private float _currentAngularVelocity;   // For smoothing rotation
+    
+    // Camera
+    private Camera _mainCamera;              // Cache the Camera reference
 
+    // Fuel
+    public float currentFuel;
+    public float maxFuel = 1000f;
+    public TextMeshProUGUI fuelText;
+
+    public UnityEvent OnFuelEmpty;
+    
     void Start()
     {
         // Cache the Camera component
@@ -22,13 +34,27 @@ public class BoatController : MonoBehaviour
         {
             Debug.LogError("No camera tagged as MainCamera in the scene.");
         }
+
+        currentFuel = maxFuel;
     }
     
     void Update()
     {
+        currentFuel -= Time.deltaTime * 2 * _currentVelocity.magnitude;
+
+        if (currentFuel <= 0)
+        {
+            OnFuelEmpty.Invoke();
+        }
+        
+        
+        fuelText.text = "Fuel: " + currentFuel.ToString("F0");
+        
         GetMousePosition();
         RotateTowardsTarget();
         MoveTowardsTarget();
+        
+        
     }
 
     // Get the mouse position in world space

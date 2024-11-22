@@ -9,6 +9,8 @@ public class Item : MonoBehaviour, ICollectible
         // Logic for collecting the item (e.g., increase score or inventory)
         Destroy(gameObject); // Destroy the item after collection
         Debug.Log("Item collected!");
+        
+        
     }
     
     // Start is called before the first frame update
