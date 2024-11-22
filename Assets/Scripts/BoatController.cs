@@ -14,17 +14,18 @@ public class BoatController : MonoBehaviour
     public float smoothTime = 0.8f;         // Time it takes to ease movement
     private float _currentAngularVelocity;   // For smoothing rotation
     private Vector3 _targetPosition;
-    private Vector3 _currentVelocity;        // For smoothing position
+    public Vector3 currentVelocity;        // For smoothing position
     
     // Camera
     private Camera _mainCamera;              // Cache the Camera reference
 
     // Fuel
-    public float currentFuel;
+    private float currentFuel;
     public float maxFuel = 1000f;
     public TextMeshProUGUI fuelText;
 
-    public UnityEvent OnFuelEmpty;
+    // Events
+    public UnityEvent OnGameOver;
     
     void Start()
     {
@@ -40,21 +41,17 @@ public class BoatController : MonoBehaviour
     
     void Update()
     {
-        currentFuel -= Time.deltaTime * 2 * _currentVelocity.magnitude;
-
-        if (currentFuel <= 0)
-        {
-            OnFuelEmpty.Invoke();
-        }
-        
-        
-        fuelText.text = "Fuel: " + currentFuel.ToString("F0");
-        
         GetMousePosition();
         RotateTowardsTarget();
         MoveTowardsTarget();
+
+        currentFuel -= Time.deltaTime * currentVelocity.magnitude;
+        UIFuelUpdater();
         
-        
+        if (currentFuel <= 0)
+        {
+            OnGameOver.Invoke();
+        }
     }
 
     // Get the mouse position in world space
@@ -92,7 +89,7 @@ public class BoatController : MonoBehaviour
         transform.position = Vector3.SmoothDamp(
             transform.position, 
             _targetPosition, 
-            ref _currentVelocity, 
+            ref currentVelocity, 
             smoothTime, 
             moveSpeed);
     }
@@ -110,5 +107,16 @@ public class BoatController : MonoBehaviour
         {
             Debug.Log("Object not collectible.");
         }      
+    }
+    
+    // Update the 
+    private void UIFuelUpdater()
+    {
+        fuelText.text = "Fuel: " + currentFuel.ToString("F0");
+    }
+
+    public void AddFuel()
+    {
+        currentFuel += 100f;
     }
 }
