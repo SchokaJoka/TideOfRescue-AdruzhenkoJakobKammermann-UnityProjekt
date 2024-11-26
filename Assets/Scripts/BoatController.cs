@@ -20,7 +20,7 @@ public class BoatController : MonoBehaviour
     private Camera _mainCamera;              // Cache the Camera reference
 
     // Fuel
-    private float currentFuel;
+    public float currentFuel;
     public float maxFuel = 1000f;
     public TextMeshProUGUI fuelText;
 
@@ -45,7 +45,7 @@ public class BoatController : MonoBehaviour
         RotateTowardsTarget();
         MoveTowardsTarget();
 
-        currentFuel -= Time.deltaTime * currentVelocity.magnitude;
+        currentFuel -= Time.deltaTime * 2 * currentVelocity.magnitude;
         UIFuelUpdater();
         
         if (currentFuel <= 0)
@@ -113,6 +113,7 @@ public class BoatController : MonoBehaviour
     private void UIFuelUpdater()
     {
         fuelText.text = "Fuel: " + currentFuel.ToString("F0");
+        
     }
 
     public void AddFuel()
