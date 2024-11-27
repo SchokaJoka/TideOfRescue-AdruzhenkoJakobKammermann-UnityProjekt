@@ -6,6 +6,13 @@ using UnityEngine.Events;
 public class Item : MonoBehaviour, ICollectible
 {
     private GameObject player;
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        player = GameObject.Find("Player");
+    }
+    
     public void Collect() 
     {
         // Logic for collecting the item (e.g., increase score or inventory)
@@ -19,17 +26,5 @@ public class Item : MonoBehaviour, ICollectible
         {
             Debug.LogError("BoatController Script not found");
         }    
-    }
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        player = GameObject.Find("Player");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

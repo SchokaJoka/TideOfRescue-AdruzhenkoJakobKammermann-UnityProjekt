@@ -10,43 +10,34 @@ public class BoatController : MonoBehaviour
 {
     // Movement
     public float moveSpeed = 2f;            // Maximum forward speed
-    public float rotationSpeed = 20f;       // Maximum rotation speed (degrees per second)
     public float smoothTime = 0.8f;         // Time it takes to ease movement
+    
+    private float currentVelocity;           // For smoothing position
     private float _currentAngularVelocity;   // For smoothing rotation
     private Vector3 _targetPosition;
-    public Vector3 currentVelocity;        // For smoothing position
-    
+
     // Camera
     private Camera _mainCamera;              // Cache the Camera reference
 
     // Fuel
     public float currentFuel;
     public float maxFuel = 1000f;
-    public TextMeshProUGUI fuelText;
 
     // Events
     public UnityEvent OnGameOver;
     
     void Start()
     {
-        // Cache the Camera component
-        _mainCamera = Camera.main;
-        if (_mainCamera == null)
-        {
-            Debug.LogError("No camera tagged as MainCamera in the scene.");
-        }
-
+        SetCamera();
         currentFuel = maxFuel;
     }
     
     void Update()
     {
+        currentFuel -= Time.deltaTime * currentVelocity;
         GetMousePosition();
         RotateTowardsTarget();
         MoveTowardsTarget();
-
-        currentFuel -= Time.deltaTime * 2 * currentVelocity.magnitude;
-        UIFuelUpdater();
         
         if (currentFuel <= 0)
         {
@@ -85,13 +76,14 @@ public class BoatController : MonoBehaviour
     // Move smoothly towards the target position
     void MoveTowardsTarget()
     {
-        // Smoothly move towards the target position with easing
-        transform.position = Vector3.SmoothDamp(
-            transform.position, 
-            _targetPosition, 
-            ref currentVelocity, 
-            smoothTime, 
-            moveSpeed);
+        // Calculate distance between current player position and mouse position
+        float distance = Vector2.Distance(transform.position, _targetPosition); 
+        
+        // Adjust speed based on distance
+        currentVelocity = Mathf.Clamp(distance, 0, moveSpeed);                                  
+        
+        // Move the player forward in the direction it's facing
+        transform.position += transform.up * (currentVelocity * Time.deltaTime);
     }
 
     // What to do when the boat collides with something
@@ -109,15 +101,18 @@ public class BoatController : MonoBehaviour
         }      
     }
     
-    // Update the 
-    private void UIFuelUpdater()
-    {
-        fuelText.text = "Fuel: " + currentFuel.ToString("F0");
-        
-    }
-
     public void AddFuel()
     {
-        currentFuel += 100f;
+        currentFuel = maxFuel;
+    }
+    
+    private void SetCamera()
+    {
+        // Cache the Camera component
+        _mainCamera = Camera.main;
+        if (_mainCamera == null)
+        {
+            Debug.LogError("No camera tagged as MainCamera in the scene.");
+        }
     }
 }
