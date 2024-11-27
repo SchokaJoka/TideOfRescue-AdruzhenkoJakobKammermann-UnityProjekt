@@ -8,11 +8,10 @@ public class ArrowIndicator : MonoBehaviour
     public Transform target; // The object the arrow points to
     public RectTransform arrowTransform; // The arrow's UI RectTransform
     public Camera mainCamera; // Reference to the main camera
-    private GameObject arrowImage;
+    public GameObject arrowImage;
 
     void Start()
     {
-        arrowImage = arrowTransform.Find("arrow_image").gameObject;
         if (!mainCamera) mainCamera = Camera.main;
     }
 
@@ -58,6 +57,6 @@ public class ArrowIndicator : MonoBehaviour
 
     public void ArrowDelete()
     {
-        Destroy(gameObject);
+        arrowImage.SetActive(false);
     }
 }

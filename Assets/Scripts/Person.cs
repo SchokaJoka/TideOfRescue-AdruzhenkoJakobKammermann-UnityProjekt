@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+
 // ReSharper disable Unity.PerformanceCriticalCodeInvocation
 
 public class Person : MonoBehaviour, ICollectible
@@ -14,6 +16,9 @@ public class Person : MonoBehaviour, ICollectible
     public GameObject sliderBar; // Reference to the slider bar (parent object)
     public GameObject fillBar; // Reference to the fill bar (child object)
 
+    public UnityEvent OnPersonCollect;
+    public UnityEvent OnPersonDrown;
+    
     void Start()
     {
         sliderBar.transform.localScale = new Vector2(2f, 0.2f);
@@ -45,6 +50,7 @@ public class Person : MonoBehaviour, ICollectible
 
     private void Drown()
     {
+        OnPersonDrown.Invoke();
         Destroy(gameObject);
     }
 
@@ -58,6 +64,7 @@ public class Person : MonoBehaviour, ICollectible
             else
             {
                 gameManager.BringOnBoard(); // Call BringOnBoard to update count
+                OnPersonCollect.Invoke();
                 Destroy(gameObject);
                 Debug.Log("Person rescued!");
             }

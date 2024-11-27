@@ -29,7 +29,7 @@ public class PeopleOnBoat : MonoBehaviour
         }
     }
     
-    public void RemovePersonFromBoat()
+    public void ResetPersononBoat()
     {
         // Deactivate all child objects at the start
         foreach (GameObject child in children)

@@ -25,6 +25,7 @@ public class BoatController : MonoBehaviour
 
     // Events
     public UnityEvent OnGameOver;
+    public UnityEvent OnIslandEnter;
     
     void Start()
     {
@@ -97,7 +98,7 @@ public class BoatController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Object not collectible.");
+            OnIslandEnter.Invoke();
         }      
     }
     

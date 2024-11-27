@@ -20,4 +20,9 @@ public class GameManager : MonoBehaviour
     {
         return personsOnBoard >= capacity;
     }
+
+    public void ResetCapacity()
+    {
+        personsOnBoard = 0;
+    }
 }
