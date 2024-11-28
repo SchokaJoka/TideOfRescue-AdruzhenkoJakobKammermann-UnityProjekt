@@ -1,67 +1,78 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class PersonSpawner : MonoBehaviour
 {
-    public GameObject[] prefabs;                        // Array of prefabs to spawn    
-    public GameObject arrowPrefab;                      // Prefab for the UI arrow
-    public int numberOfObjects = 15;                    // How many objects to spawn
-    public Vector2 minBounds = new Vector2(-40, -40);   // Bottom-left of the area
-    public Vector2 maxBounds = new Vector2(40, 40);     // Top-right of the area
-    public float radius = 15;                            // Minimum distance between objects
-    public Transform canvasTransform;                   // Reference to the Canvas
-    private GameObject spawnedObject;
+    public GameObject[] prefabs;                            // Array of prefabs to spawn    
+    public GameObject arrowPrefab;                          // Prefab for the UI arrow
+    private GameObject spawnedObject;                       // Reference to the spawned object
+    public GameManager gM;                                  // Reference to the GameManager
+    public Transform canvasTransform;                       // Reference to the Canvas
+    private int attempts = 0;                                // Number of spawn attempts
     
+    public int numberOfObjects = 8;                         // How many objects to spawn
+    private int spawnedObjectCounter = 0;                         // Temporary counter for Debugging
+    private float radius = 1f;                           // Minimum distance between objects
     
-    void Start()
+    public float dieTime = 80f;                             // Time before the person dies
+
+    private Vector2 minBounds = new Vector2(-30, -30);    // Bottom-left of the area
+    private Vector2 maxBounds = new Vector2(30, 30);      // Top-right of the area
+    private Vector2 spawnPosition;                          // Random spawn position
+
+
+    void Awake()
     {
         for (int i = 0; i < numberOfObjects; i++)
         {
             SpawnObject();
         }
+        Debug.Log(spawnedObjectCounter + " People spawned!");
+        
     }
 
     public void SpawnObject()
-    { 
-        // Generate a random position within bounds
-        float x = Random.Range(minBounds.x, maxBounds.x);
-        float y = Random.Range(minBounds.y, maxBounds.y);
-        Vector2 spawnPosition = new Vector2(x, y);
+    {
+        // Attempts to find a random position with no collisions
+        do
+        {
+            // Generate a random position within bounds
+            float x = Random.Range(minBounds.x, maxBounds.x);
+            float y = Random.Range(minBounds.y, maxBounds.y);
+            spawnPosition = new Vector2(x, y);
+            attempts++;
+            if (attempts >= 40)
+            {
+                return; // Exit the method if unable to find a valid position
+            }
+        } while (Physics2D.OverlapCircle(spawnPosition, radius) != null);
 
         // Randomly select a prefab from the array
         GameObject prefabToSpawn = prefabs[Random.Range(0, prefabs.Length)];
         
-        // Instantiate the object
-        Collider[] colliders = Physics.OverlapSphere(spawnPosition, radius);
-        if (colliders.Length == 0)
-        {
-            Person person = prefabToSpawn.gameObject.GetComponent<Person>();
-            if (person != null)
+        // Check if prefab has a Person script
+        Person person = prefabToSpawn.gameObject.GetComponent<Person>();
+            if (person)
             {
+                // Instantiate the object
                 spawnedObject = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
-                spawnedObject.gameObject.GetComponent<Person>().survivalTime = Random.Range(50, 80);
-                Debug.Log("Person spawn successful!");
+                spawnedObject.gameObject.GetComponent<Person>().survivalTime = dieTime;
+                gM.setgameTimer = dieTime;
+                spawnedObjectCounter++;
             }
             else
             {
                 Debug.LogError("Person script not found on the spawned object!");
             }
-        }
-        else
-        {
-            Debug.LogError("Cannot spawn person. Too close to another object!");
-            return;
-        }
-        
-
+            
         if (arrowPrefab)
         {
             GameObject arrow = Instantiate(arrowPrefab, canvasTransform);
             ArrowIndicator arrowIndicator = arrow.GetComponent<ArrowIndicator>();
             arrowIndicator.target = spawnedObject.transform; // Assign target
-            Debug.Log("PersonArrow spawned!");
         }
         else
         {

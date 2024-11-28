@@ -8,24 +8,21 @@ using UnityEngine.Events;
 
 public class BoatController : MonoBehaviour
 {
-    // Movement
-    public float moveSpeed = 2f;            // Maximum forward speed
-    public float smoothTime = 0.8f;         // Time it takes to ease movement
     
-    private float currentVelocity;           // For smoothing position
-    private float _currentAngularVelocity;   // For smoothing rotation
-    private Vector3 _targetPosition;
-
-    // Camera
-    private Camera _mainCamera;              // Cache the Camera reference
-
-    // Fuel
+    public float moveSpeed = 5f;            // Maximum forward speed
+    public float smoothTime = 0.9f;         // Time it takes to ease movement
+    
     public float currentFuel;
     public float maxFuel = 1000f;
-
-    // Events
+    
     public UnityEvent OnGameOver;
     public UnityEvent OnIslandEnter;
+    
+    // Private variables
+    public float currentVelocity;           // For smoothing position
+    public float _currentAngularVelocity;   // For smoothing rotation
+    public Vector3 _targetPosition;
+    public Camera _mainCamera;              // Cache the Camera reference
     
     void Start()
     {

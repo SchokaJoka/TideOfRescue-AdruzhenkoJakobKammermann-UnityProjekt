@@ -8,19 +8,20 @@ using UnityEngine.Events;
 
 public class Person : MonoBehaviour, ICollectible
 {
-    public float survivalTime = 3f; // Time in seconds before the person drowns
+    public float survivalTime; // Time in seconds before the person drowns
     private float timer;
     private GameManager gameManager;
     private float sliderFillAmount;
-
+    
     public GameObject sliderBar; // Reference to the slider bar (parent object)
     public GameObject fillBar; // Reference to the fill bar (child object)
-
+    
     public UnityEvent OnPersonCollect;
     public UnityEvent OnPersonDrown;
     
     void Start()
     {
+        Debug.Log(survivalTime + " seconds");
         sliderBar.transform.localScale = new Vector2(2f, 0.2f);
         timer = survivalTime;
         gameManager = FindObjectOfType<GameManager>(); // Find GameManager instance
@@ -60,13 +61,13 @@ public class Person : MonoBehaviour, ICollectible
             if (gameManager.IsCapacityReached())
             {
                 Debug.Log("Cannot rescue person. Capacity reached!");
+                gameManager.WarningText.Invoke();
             }
             else
             {
                 gameManager.BringOnBoard(); // Call BringOnBoard to update count
                 OnPersonCollect.Invoke();
                 Destroy(gameObject);
-                Debug.Log("Person rescued!");
             }
     }
     
@@ -78,4 +79,6 @@ public class Person : MonoBehaviour, ICollectible
         // Adjust fill based on time remaining
         fillBar.transform.localScale = new Vector2(sliderFillAmount * 2f, 0.2f);
     }
+    
+
 }

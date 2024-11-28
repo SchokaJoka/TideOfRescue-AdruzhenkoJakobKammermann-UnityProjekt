@@ -5,51 +5,56 @@ using UnityEngine.Serialization;
 
 public class ItemSpawner : MonoBehaviour
 {
-    public GameObject itemPrefab;                          // Prefab to spawn   
+    public GameObject itemPrefab;                       // Prefab to spawn   
     public GameObject arrowPrefab;                      // Prefab for the UI arrow
-    public int numberOfObjects = 15;                    // How many objects to spawn
-    public Vector2 minBounds = new Vector2(-40, -40);   // Bottom-left of the area
-    public Vector2 maxBounds = new Vector2(40, 40);     // Top-right of the area
-    public float radius = 15;                           // Minimum distance between objects
-    public Transform canvasTransform;                   // Reference to the Canvas
     private GameObject spawnedObject;
+    public Transform canvasTransform;                   // Reference to the Canvas
+    private int attempts = 0;                            // Number of spawn attempts
     
-    void Start()
+    public int numberOfObjects = 15;                    // How many objects to spawn
+    private int spawnedObjectCounter = 0;               // Temporary counter for Debugging
+    private float radius = 1f;                          // Minimum distance between objects
+
+    private Vector2 minBounds = new Vector2(-30, -30);   // Bottom-left of the area
+    private Vector2 maxBounds = new Vector2(30, 30);     // Top-right of the area
+    private Vector2 spawnPosition;
+    
+    void Awake()
     {
         for (int i = 0; i < numberOfObjects; i++)
         {
             SpawnObject();
         }
+        Debug.Log(spawnedObjectCounter + " Items spawned!");
     }
 
     public void SpawnObject()
-    { 
-        // Generate a random position within bounds
-        float x = Random.Range(minBounds.x, maxBounds.x);
-        float y = Random.Range(minBounds.y, maxBounds.y);
-        Vector2 spawnPosition = new Vector2(x, y);
-
-        // Check if spawn point has no collisions
-        Collider[] colliders = Physics.OverlapSphere(spawnPosition, radius);
-        if (colliders.Length == 0)
+    {
+        // Attempts to find a random position with no collisions
+        do
         {
-            // Instantiate the object
-            spawnedObject = Instantiate(itemPrefab, spawnPosition, Quaternion.identity);
-            Debug.Log("Item spawned!");
-        }
-        else
-        {
-            Debug.LogError("Cannot spawn item. Too close to another object!");
-            return;
-        }
-
+            // Generate a random position within bounds
+            float x = Random.Range(minBounds.x, maxBounds.x);
+            float y = Random.Range(minBounds.y, maxBounds.y);
+            spawnPosition = new Vector2(x, y);
+            
+            attempts++;
+            if (attempts >= 50)
+            {
+                return; // Exit the method if unable to find a valid position
+            }
+            
+        } while (Physics2D.OverlapCircle(spawnPosition, radius) != null);
+        
+        // Instantiate the object
+        spawnedObject = Instantiate(itemPrefab, spawnPosition, Quaternion.identity);
+        spawnedObjectCounter++;
+            
         if (arrowPrefab)
         {
-            // Instanciate UI Arrow
             GameObject arrow = Instantiate(arrowPrefab, canvasTransform);
             ArrowIndicator arrowIndicator = arrow.GetComponent<ArrowIndicator>();
             arrowIndicator.target = spawnedObject.transform; // Assign target
-          
         }
         else
         {

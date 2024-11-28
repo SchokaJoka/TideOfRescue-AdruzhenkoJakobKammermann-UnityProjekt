@@ -9,6 +9,7 @@ public class GameSceneManager : MonoBehaviour
     private string GameOver = "GameOver";
     private string GameScene = "GameScene";
     private string MainMenu = "MainMenu";
+    private string GameWon = "GameWon";
     
     public void StartGameScene()
     {
@@ -23,5 +24,10 @@ public class GameSceneManager : MonoBehaviour
     public void LoadMainMenuScene()
     {
         SceneManager.LoadScene(MainMenu);
+    }
+
+    public void LoadGameWonScene()
+    {
+        SceneManager.LoadScene(GameWon);
     }
 }

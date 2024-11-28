@@ -276,6 +276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   survivalTime: 300
+  uiWarningText: {fileID: 0}
   sliderBar: {fileID: 3220001813935909522}
   fillBar: {fileID: 4307198017770311952}
   OnPersonCollect:
@@ -317,8 +318,9 @@ Animation:
   m_GameObject: {fileID: 3814233741893993585}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations: []
+  m_Animation: {fileID: 7400000, guid: d2282afef70adfb47a1d5e7fddadd5a5, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: d2282afef70adfb47a1d5e7fddadd5a5, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
