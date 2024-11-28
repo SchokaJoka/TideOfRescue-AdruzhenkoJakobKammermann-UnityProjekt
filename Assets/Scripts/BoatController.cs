@@ -9,7 +9,9 @@ using UnityEngine.Events;
 public class BoatController : MonoBehaviour
 {
     
-    public float moveSpeed = 5f;            // Maximum forward speed
+    public AudioSource collectSound;
+    
+    public float moveSpeed = 3f;            // Maximum forward speed
     public float smoothTime = 0.9f;         // Time it takes to ease movement
     
     public float currentFuel;
@@ -92,6 +94,7 @@ public class BoatController : MonoBehaviour
         if (collectible != null)
         {
             collectible.Collect();
+            collectSound.Play();
         }
         else
         {

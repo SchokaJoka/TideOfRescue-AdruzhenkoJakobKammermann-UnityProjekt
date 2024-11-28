@@ -17,7 +17,7 @@ public class PersonSpawner : MonoBehaviour
     private int spawnedObjectCounter = 0;                         // Temporary counter for Debugging
     private float radius = 1f;                           // Minimum distance between objects
     
-    public float dieTime = 80f;                             // Time before the person dies
+    public float dieTime = 100f;                             // Time before the person dies
 
     private Vector2 minBounds = new Vector2(-30, -30);    // Bottom-left of the area
     private Vector2 maxBounds = new Vector2(30, 30);      // Top-right of the area
