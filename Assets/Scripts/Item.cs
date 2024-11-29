@@ -24,7 +24,7 @@ public class Item : MonoBehaviour, ICollectible
         {
             Debug.LogError("BoatController Script not found");
         }
-
+        
         Destroy(gameObject);
         OnItemCollect.Invoke();
     }

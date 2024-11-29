@@ -10,7 +10,7 @@ public class BoatController : MonoBehaviour
 {
     
     public AudioSource collectSound;
-    
+    public AudioSource onIslandSound;
     public float moveSpeed = 3f;            // Maximum forward speed
     public float smoothTime = 0.9f;         // Time it takes to ease movement
     
@@ -99,6 +99,7 @@ public class BoatController : MonoBehaviour
         else
         {
             OnIslandEnter.Invoke();
+            onIslandSound.Play();
         }      
     }
     
